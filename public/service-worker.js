@@ -40,3 +40,9 @@ self.addEventListener('activate', function(evt) {
 
   self.clients.claim();
 });
+
+//Enabling service worker to intercept network requests
+self.addEventListener('fetch', function(evt) {
+  //code to handle requests
+});
+
