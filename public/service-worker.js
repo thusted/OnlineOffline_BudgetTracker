@@ -43,6 +43,35 @@ self.addEventListener('activate', function(evt) {
 
 //Enabling service worker to intercept network requests
 self.addEventListener('fetch', function(evt) {
-  //code to handle requests
+  //Serving static files from cache. Proceed with a network request when the resource is not in the cache. Allows the page to be accessable offline.
+  if (evt.request.url.includes("/api")) {
+    console.log("[Service worker] fetch (data)", evt.request.url);
+
+    evt.respondWith(
+      caches.open(DATA_CACHE_NAME).then(cache => {
+        return fetch(evt.request).then(response => {
+          if (response.status === 200) {
+            cache.put(evt.request.url, response.clone());
+          }
+  
+          return response;
+        })
+        .catch(err => {
+          return cache.match(evt.request);
+        });
+      })
+    );
+    return;
+  }
+
+  evt.respondWith(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.match(evt.request).then(response => {
+        return response || fetch(evt.request);
+      });
+    })
+  );
 });
+
+
 
