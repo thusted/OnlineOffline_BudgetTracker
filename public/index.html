@@ -57,5 +57,13 @@
       });
     }
   </script>
+
+<script>
+  const request = window.indexedDB.open("transactionDatabase", 1);
+
+  request.onsuccess = event => {
+    console.log(request.result.name);
+  };
+</script>
 </body>
 </html>
